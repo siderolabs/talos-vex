@@ -1,6 +1,7 @@
 # Talos Vulnerability Exploitability eXchange
 
-[OpenVEX](https://github.com/openvex/spec/blob/main/OPENVEX-SPEC.md) is a standard for communicating the exploitability of vulnerabilities of components in a software product. This repository contains such information for [Talos Linux](https://github.com/siderolabs/talos), as well as the tool we maintain to generate VEX documents for different versions and editions of Talos.
+[OpenVEX](https://github.com/openvex/spec/blob/main/OPENVEX-SPEC.md) is a standard for communicating the exploitability of vulnerabilities of components in a software product.
+This repository contains such information for [Talos Linux](https://github.com/siderolabs/talos), as well as the tool we maintain to generate VEX documents for different versions and editions of Talos.
 
 ## Usage
 

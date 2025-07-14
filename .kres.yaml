@@ -1,0 +1,4 @@
+---
+kind: golang.Generate
+spec:
+  versionPackagePath: internal/version

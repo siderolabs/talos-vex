@@ -1,0 +1,21 @@
+author: "Sidero Labs (https://siderolabs.com/)"
+ids:
+  purl: pkg:generic/talos
+statements:
+  - created: 2025-07-14T12:00:00Z
+    name: "CVE-2025-26519"
+    description: "Musl versions before 1.2.6 ..."
+    aliases:
+      - "CVE-2025-26519"
+    from: v1.10.0-alpha.1-35-g46d67fe44
+    status: "fixed"
+    statusNotes: "https://github.com/siderolabs/toolchain/commit/818b320288afa40da07f95998b8739bf211a9f9c"
+  - created: 2025-07-14T13:41:23Z
+    name: "CVE-2025-40014"
+    from: v1.4.0-alpha.0-16-g683b4ccb4
+    status: "not_affected"
+    statusNotes: |
+      Talos kernel configurations do not enable the affected driver in any build
+      https://github.com/siderolabs/pkgs/blob/8ed84c56c384c957940b1b2371dd0c4fb1a80d54/kernel/build/config-amd64#L3491
+      https://github.com/siderolabs/pkgs/blob/8ed84c56c384c957940b1b2371dd0c4fb1a80d54/kernel/build/config-arm64#L4024
+    justification: "vulnerable_code_not_present"
