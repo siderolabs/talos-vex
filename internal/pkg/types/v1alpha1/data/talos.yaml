@@ -1,21 +1,579 @@
 author: "Sidero Labs (https://siderolabs.com/)"
 ids:
   purl: pkg:generic/talos
+# Most of the records have a `REMOVE:` comment. This is a marker for the
+# maintainers to remove the record when the vulnerability is no longer relevant.
+# Such a comment must contain the component and the version in which the vulnerability
+# is completely fixed. Once none of the supported Talos versions are affected by the vulnerability,
+# the record should be removed to keep the list clean.
 statements:
+  ### FIXME: investigate, no fix found yet
+  - created: 2025-07-19T13:50:54Z
+    name: CVE-2023-3640
+    status: under_investigation
+    statusNotes: |
+      This vulnerability is still under investigation, no fix found yet in mainline kernel.
+      https://security-tracker.debian.org/tracker/CVE-2023-3640
+  - created: 2025-07-19T13:50:54Z
+    name: CVE-2023-6240
+    status: under_investigation
+    statusNotes: |
+      This vulnerability is still under investigation, no fix found yet in mainline kernel.
+      https://security-tracker.debian.org/tracker/CVE-2023-6240
+
+  # REMOVE: Linux >= 6.14
+  - created: 2025-07-18T08:12:45Z
+    name: CVE-2025-21751
+    status: affected
+    # FIXME: Can this be backported downstream?
+    action: "Vulnerability affects Talos when the affected hardware is present and mlx5 driver is loaded"
+  # REMOVE: Linux >= 6.14
+  - created: 2025-07-18T08:33:24Z
+    name: CVE-2025-21833
+    status: affected
+    # FIXME: Can this be backported downstream?
+    action: "Vulnerability affects Talos when the affected hardware is present and Intel VT-d IOMMU driver is loaded"
+  # REMOVE: Linux >= 6.15
+  - created: 2025-07-18T08:33:24Z
+    name: CVE-2025-37860
+    status: affected
+    # FIXME: Can this be backported downstream?
+    action: "Vulnerability affects Talos when the affected hardware is present and sfc driver (ef100 device support) is loaded"
+  # Apparently this will live on forever while we still use ICMP
+  - created: 2025-07-19T12:40:16Z
+    name: CVE-1999-0524
+    status: affected
+    # FIXME: inline mitigations possible via built-in iptables rules?
+    action: |
+      This is a very common CVE of Low severity, however if it is a concern you need to configure your firewall
+      to reject ICMP timestamp requests. However, this does not have high impact on security in most cases.
+
+  # REMOVE: Musl >= 1.2.6
   - created: 2025-07-14T12:00:00Z
-    name: "CVE-2025-26519"
-    description: "Musl versions before 1.2.6 ..."
-    aliases:
-      - "CVE-2025-26519"
+    name: CVE-2025-26519
     from: v1.10.0-alpha.1-35-g46d67fe44
-    status: "fixed"
-    statusNotes: "https://github.com/siderolabs/toolchain/commit/818b320288afa40da07f95998b8739bf211a9f9c"
+    status: fixed
+    statusNotes: |
+      Talos applies the patch suggested by the Musl team
+      https://github.com/siderolabs/toolchain/commit/818b320288afa40da07f95998b8739bf211a9f9c
+  # REMOVE: Linux >= 6.15
   - created: 2025-07-14T13:41:23Z
-    name: "CVE-2025-40014"
+    name: CVE-2025-40014
     from: v1.4.0-alpha.0-16-g683b4ccb4
-    status: "not_affected"
+    status: not_affected
+    justification: vulnerable_code_not_present
     statusNotes: |
       Talos kernel configurations do not enable the affected driver in any build
       https://github.com/siderolabs/pkgs/blob/8ed84c56c384c957940b1b2371dd0c4fb1a80d54/kernel/build/config-amd64#L3491
       https://github.com/siderolabs/pkgs/blob/8ed84c56c384c957940b1b2371dd0c4fb1a80d54/kernel/build/config-arm64#L4024
-    justification: "vulnerable_code_not_present"
+  # REMOVE: Linux >= 6.15
+  - created: 2025-07-18T07:33:51Z
+    name: CVE-2025-37803
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos has never enabled CONFIG_UDMABUF, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-arm64#L7100
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-amd64#L5690
+  # REMOVE: Linux >= 6.15
+  - created: 2025-07-18T07:43:31Z
+    name: CVE-2024-58097
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos has never enabled WLAN subsystem, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-arm64#L3377
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-amd64#L3045
+  # REMOVE: Linux >= 6.14
+  - created: 2025-07-18T07:43:31Z
+    name: CVE-2024-57995
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos has never enabled WLAN subsystem, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-arm64#L3377
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-amd64#L3045
+  # REMOVE: Linux >= 6.14
+  - created: 2025-07-18T07:57:40Z
+    name: CVE-2025-21949
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not target LoongArch architecture, so the affected code is not being built
+  # REMOVE: Linux >= 6.15
+  - created: 2025-07-18T07:59:34Z
+    name: CVE-2025-37925
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not build JFS filesystem, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-arm64#L8904
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-amd64#L6156
+
+  ### These CVEs have erroneous version ranges in databases, these records should be sometimes re-checked
+  ### CVEs from before Linux has become a CNA are likely to have incorrect version ranges
+  ### These are likely already fixed, but missing the version range information in the databases
+  ### We consider CVEs published before 2023 as fixed in 6.12 and later, since vulnerabilities
+  ### are usually disclosed after a fix is available in the mainline kernel
+
+  # REMOVE: Linux >= 6.15
+  - created: 2025-07-18T08:33:24Z
+    name: CVE-2025-23137
+    from: v1.11.0-alpha.1-27-g19d94c357
+    status: fixed
+    # Fixed in Linux 6.12.35, but only reported to be fixed by 6.14.2
+    statusNotes: |
+      Upstream Linux kernel fixed this vulnerability in version 6.12.35 https://lwn.net/Articles/1027277/.
+      
+  - created: 2025-07-18T07:47:12Z
+    name: CVE-2023-1075
+    from: v1.6.0-alpha.2-83-gb44551ccd
+    status: fixed
+    # Fixed in Linux 6.2
+    statusNotes: |
+      Upstream Linux kernel fixed this vulnerability in commit ffe2a22562444720b05bdfeb999c03e810d84cbb,
+      which was first included when Talos started using the 6.6 kernel series in v1.6.0-alpha.2-83-gb44551ccd.
+  - created: 2025-07-18T08:08:03Z
+    name: CVE-2022-2785
+    from: v1.4.0
+    # Fixed in Linux 6.0
+    status: fixed
+    statusNotes: |
+      Upstream Linux kernel fixed this vulnerability in commit 86f44fcec22ce2979507742bc53db8400e454f46,
+      which was applied to Linux 6.0, and first included in Talos v1.4.0 with the kernel 6.1.
+  - created: 2025-07-18T21:04:04Z
+    name: CVE-2023-6238
+    from: v1.10.0-alpha.2-40-g9b9512ba8
+    status: fixed
+    statusNotes: |
+      Fix from 6.13 has been backported to Linux 6.12.19
+      https://github.com/gregkh/linux/commit/3c63fb6ef7f387ce8fbc0d952dc6179b75068a9a
+  - created: 2025-07-19T12:08:32Z
+    name: CVE-2023-3772
+    from: v1.6.0-alpha.2-83-gb44551ccd
+    # Fixed in Linux 6.5
+    status: fixed
+    statusNotes: |
+      Upstream Linux kernel fixed this vulnerability in v6.5 by commit 00374d9b6d9f932802b55181be9831aa948e5b7c,
+      which was first included when Talos started using the 6.6 kernel.
+      https://github.com/gregkh/linux/commit/00374d9b6d9f932802b55181be9831aa948e5b7c
+  - created: 2025-07-19T12:08:32Z
+    name: CVE-2023-3773
+    from: v1.6.0-alpha.2-83-gb44551ccd
+    # Fixed in Linux 6.5
+    status: fixed
+    statusNotes: |
+      Upstream Linux kernel fixed this vulnerability in v6.5 by commit b3003e1b54e057f5f3124e437b80c3bef26ed3fe,
+      which was first included when Talos started using the 6.6 kernel.
+      https://github.com/gregkh/linux/commit/b3003e1b54e057f5f3124e437b80c3bef26ed3fe
+  - created: 2025-07-19T12:08:32Z
+    name: CVE-2023-1074
+    from: v1.6.0-alpha.2-83-gb44551ccd
+    # Fixed in Linux 6.2
+    status: fixed
+    statusNotes: |
+      Upstream Linux kernel fixed this vulnerability in v6.2 by commit 458e279f861d3f61796894cd158b780765a1569f,
+      which was first included when Talos started using the 6.6 kernel.
+      https://github.com/gregkh/linux/commit/458e279f861d3f61796894cd158b780765a1569f
+  - created: 2025-07-19T12:08:32Z
+    name: CVE-2023-4155
+    from: v1.6.0-alpha.2-83-gb44551ccd
+    # Fixed in Linux 6.5
+    status: fixed
+    statusNotes: |
+      Upstream Linux kernel fixed this vulnerability in v6.5 by commit 7588dbcebcbf0193ab5b76987396d0254270b04a,
+      which was first included when Talos started using the 6.6 kernel.
+      https://github.com/gregkh/linux/commit/7588dbcebcbf0193ab5b76987396d0254270b04a
+  - created: 2025-07-19T12:08:32Z
+    name: CVE-2023-1076
+    from: v1.6.0-alpha.2-83-gb44551ccd
+    # Fixed in Linux 6.5
+    status: fixed
+    statusNotes: |
+      Upstream Linux kernel fixed this vulnerability in v6.5 by commit 5c9241f3ceab3257abe2923a59950db0dc8bb737,
+      which was first included when Talos started using the 6.6 kernel.
+      https://github.com/gregkh/linux/commit/5c9241f3ceab3257abe2923a59950db0dc8bb737
+  - created: 2025-07-19T12:08:32Z
+    name: CVE-2023-6610
+    from: v1.9.0-alpha.3-16-gef69c9d39
+    # Fixed in Linux 6.7
+    status: fixed
+    statusNotes: |
+      Upstream Linux kernel fixed this vulnerability in v6.7 by commit 567320c46a60a3c39b69aa1df802d753817a3f86,
+      which was first included when Talos started using the 6.12 kernel.
+      https://github.com/gregkh/linux/commit/567320c46a60a3c39b69aa1df802d753817a3f86
+  - created: 2025-07-19T13:06:55Z
+    name: CVE-2023-6535
+    from: v1.9.0-alpha.3-16-gef69c9d39
+    # Fixed in Linux 6.8
+    status: fixed
+    statusNotes: |
+      Upstream Linux kernel fixed this (and related) vulnerability in a patch series in v6.8, which was
+      first included when Talos started using the 6.12 kernel.
+      https://github.com/gregkh/linux/commit/0849a5441358cef02586fb2d60f707c0db195628
+      https://github.com/gregkh/linux/commit/efa56305908ba20de2104f1b8508c6a7401833be
+      https://github.com/gregkh/linux/commit/9a1abc24850eb759e36a2f8869161c3b7254c904
+  - created: 2025-07-19T13:16:09Z
+    name: CVE-2023-4010
+    # Most likely fixed in Linux 6.0
+    status: fixed
+    statusNotes: |
+      Upstream Linux kernel reorganized this code in commit 26c6c2f8a907c9e3a2f24990552a4d77235791e6,
+      which has most likely fixed this vulnerability. Red Hat closed bugs tracking this issue as only affecting EOL versions.
+      https://github.com/gregkh/linux/commit/26c6c2f8a907c9e3a2f24990552a4d77235791e6
+  - created: 2025-07-19T13:26:18Z
+    name: CVE-2023-1073
+    from: v1.6.0-alpha.2-83-gb44551ccd
+    # Fixed in Linux 6.2
+    status: fixed
+    statusNotes: |
+      Upstream Linux kernel fixed this vulnerability in v6.2 by a commit series,
+      which was first included when Talos started using the 6.6 kernel.
+      https://www.openwall.com/lists/oss-security/2023/11/05/3
+      https://github.com/gregkh/linux/commit/3782c0d6edf658b71354a64d60aa7a296188fc90
+      https://github.com/gregkh/linux/commit/b12fece4c64857e5fab4290bf01b2e0317a88456
+      https://github.com/gregkh/linux/commit/c7bf714f875531f227f2ef1fdcc8f4d44e7c7d9d
+  - created: 2025-07-19T13:32:10Z
+    name: CVE-2023-6679
+    from: v1.9.0-alpha.3-16-gef69c9d39
+    # Fixed in Linux 6.7
+    status: fixed
+    statusNotes: |
+      Upstream Linux kernel fixed this vulnerability in v6.7 by commit 65c95f78917ea6fa7ff189a2c19879c4fe161873,
+      which was first included when Talos started using the 6.12 kernel.
+      https://lore.kernel.org/netdev/20231211083758.1082853-1-jiri@resnulli.us/
+      https://github.com/gregkh/linux/commit/65c95f78917ea6fa7ff189a2c19879c4fe161873
+  - created: 2025-07-19T13:32:10Z
+    name: CVE-2023-6176
+    from: v1.6.0-alpha.2-83-gb44551ccd
+    # Fixed in Linux 6.6
+    status: fixed
+    statusNotes: |
+      Upstream Linux kernel fixed this vulnerability in v6.6 by commit cfaa80c91f6f99b9342b6557f0f0e1143e434066,
+      which was first included when Talos started using the 6.6 kernel.
+      https://github.com/gregkh/linux/commit/cfaa80c91f6f99b9342b6557f0f0e1143e434066
+
+  - created: 2025-07-18T21:13:38Z
+    name: CVE-2023-52904
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not enable SND_USB_AUDIO, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-arm64#L6643
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-amd64#L5030
+  - created: 2025-07-19T12:40:04Z
+    name: CVE-2023-2898
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not enable CONFIG_F2FS_FS, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-arm64#L8929
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-amd64#L6181
+  - created: 2025-07-18T11:54:44Z
+    name: CVE-2017-1000377
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      This vulnerability concerns PAX Linux, a patch set that is not applied to Talos Linux.
+  - created: 2025-07-18T20:02:23Z
+    # Likely already fixed, but anyway it's PPC only
+    name: CVE-2017-1000255
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not target PowerPC architecture, so the affected code is not being built.
+  - created: 2025-07-18T20:22:49Z
+    # Likely already fixed, but JFS is disabled
+    name: CVE-2023-3397
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not build JFS filesystem, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-arm64#L8904
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-amd64#L6156
+  - created: 2025-07-18T20:26:21Z
+    name: CVE-2020-27815
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not build JFS filesystem, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-arm64#L8904
+      https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-amd64#L6156
+
+  ### Old CVEs, not validated, but most likely addressed in mainline by the time of 6.12 release
+
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2006-2932
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2007-2764
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2008-2544
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2008-4609
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2010-4563
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2014-8171
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2016-0774
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2016-3695
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2016-3699
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2017-6264
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2018-10840
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2018-10876
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2018-10882
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2018-10902
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2018-14625
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2018-6559
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2019-14899
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2019-3016
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2019-3819
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2019-3887
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2020-10742
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2020-16119
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2020-1749
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2020-8834
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2021-20194
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2021-20265
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2021-3564
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2021-3714
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2021-3759
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2021-3864
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2021-4218
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-0286
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-0400
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-1247
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-2308
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-2327
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-2663
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-3435
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-3523
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-3534
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-3566
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-3567
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-3619
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-3621
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-3624
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-3629
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-3630
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-3633
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-3636
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-36402
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-3646
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-38096
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-42895
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-4382
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-07-18T20:34:39Z
+    name: CVE-2022-4543
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
