@@ -27,12 +27,6 @@ statements:
     status: affected
     # FIXME: Can this be backported downstream?
     action: "Vulnerability affects Talos when the affected hardware is present and mlx5 driver is loaded"
-  # REMOVE: Linux >= 6.15
-  - created: 2025-07-18T08:33:24Z
-    name: CVE-2025-23137
-    status: affected
-    # FIXME: Can this be backported downstream?
-    action: "Vulnerability affects Talos when the affected hardware is present and amd_pstate driver is loaded"
   # REMOVE: Linux >= 6.14
   - created: 2025-07-18T08:33:24Z
     name: CVE-2025-21833
@@ -122,6 +116,15 @@ statements:
   ### We consider CVEs published before 2024 as fixed in 6.12 and later, since vulnerabilities
   ### are usually disclosed after a fix is available in the mainline kernel
 
+  # REMOVE: Linux >= 6.15
+  - created: 2025-07-18T08:33:24Z
+    name: CVE-2025-23137
+    from: v1.11.0-alpha.1-27-g19d94c357
+    status: fixed
+    # Fixed in Linux 6.12.35, but only reported to be fixed by 6.14.2
+    statusNotes: |
+      Upstream Linux kernel fixed this vulnerability in version 6.12.35 https://lwn.net/Articles/1027277/.
+      
   - created: 2025-07-18T07:47:12Z
     name: CVE-2023-1075
     from: v1.6.0-alpha.2-83-gb44551ccd
@@ -136,7 +139,7 @@ statements:
     # Fixed in Linux 6.0
     status: fixed
     statusNotes: |
-      Upstream Linux kernel fixed this vulnerability in commit https://github.com/torvalds/linux/commit/86f44fcec22ce2979507742bc53db8400e454f46,
+      Upstream Linux kernel fixed this vulnerability in commit 86f44fcec22ce2979507742bc53db8400e454f46,
       which was applied to Linux 6.0, and first included in Talos v1.4.0 with the kernel 6.1.
   - created: 2025-07-18T21:04:04Z
     name: CVE-2023-6238
