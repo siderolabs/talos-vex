@@ -253,6 +253,17 @@ statements:
       which was first included when Talos started using the 6.6 kernel.
       https://github.com/gregkh/linux/commit/cfaa80c91f6f99b9342b6557f0f0e1143e434066
 
+    # TODO: Remove with Linux >= 6.16
+  - created: 2025-08-06T10:58:00Z
+    name: CVE-2023-4458
+    from: v1.6.0-alpha.2-83-gb44551ccd
+    # Fixed in Linux 6.6
+    status: fixed
+    statusNotes: |
+      Upstream Linux kernel fixed this vulnerability in v6.6 by commit 8ae5d298ef2005da5454fc1680f983e85d3e1622,
+      which was first included when Talos started using the 6.6 kernel.
+      https://github.com/gregkh/linux/commit/8ae5d298ef2005da5454fc1680f983e85d3e1622
+
   - created: 2025-07-18T21:13:38Z
     name: CVE-2023-52904
     status: not_affected
