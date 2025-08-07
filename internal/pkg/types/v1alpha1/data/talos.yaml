@@ -588,3 +588,18 @@ statements:
     status: fixed
     statusNotes: |
       CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-08-07T12:39:00Z
+    name: CVE-2023-39179
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-08-07T12:39:00Z
+    name: CVE-2023-39176
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-08-07T12:39:00Z
+    name: CVE-2023-39180
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
