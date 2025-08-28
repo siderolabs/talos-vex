@@ -110,6 +110,14 @@ statements:
       https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-arm64#L8904
       https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-amd64#L6156
 
+  # REMOVE: Linux >= 6.16
+  - created: 2025-07-18T07:59:34Z
+    name: CVE-2025-4598
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not ship systemd-coredump.
+
   ### These CVEs have erroneous version ranges in databases, these records should be sometimes re-checked
   ### CVEs from before Linux has become a CNA are likely to have incorrect version ranges
   ### These are likely already fixed, but missing the version range information in the databases
