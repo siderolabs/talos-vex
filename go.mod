@@ -3,11 +3,11 @@ module github.com/siderolabs/talos-vex
 go 1.24.5
 
 require (
-	github.com/openvex/go-vex v0.2.6-0.20250617055549-eb8ef91fd14a
+	github.com/openvex/go-vex v0.2.6-0.20250828082813-b9e1596d4b54
 	github.com/rodaine/table v1.3.0
 	github.com/spf13/cobra v1.9.1
-	github.com/stretchr/testify v1.10.0
-	golang.org/x/mod v0.26.0
+	github.com/stretchr/testify v1.11.1
+	golang.org/x/mod v0.27.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
