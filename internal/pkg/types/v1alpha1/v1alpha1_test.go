@@ -10,9 +10,17 @@ import (
 
 	"github.com/openvex/go-vex/pkg/vex"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/siderolabs/talos-vex/internal/pkg/types/v1alpha1"
 )
+
+func TestEmbeddedData_Validate(t *testing.T) {
+	data, err := v1alpha1.LoadExploitabilityData("")
+	require.NoError(t, err)
+
+	require.NoError(t, data.Validate())
+}
 
 func TestExploitabilityData_Validate(t *testing.T) {
 	tests := []struct {

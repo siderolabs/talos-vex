@@ -320,22 +320,26 @@ statements:
       https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-amd64#L6156
   - created: 2025-09-10T10:55:00Z
     name: CVE-2023-3079
+    status: not_affected
     justification: vulnerable_code_not_present
     statusNotes: |
       Affects Google Chrome, Talos Linux does not include it.
   - created: 2025-09-10T10:55:00Z
     name: CVE-2024-3566
+    status: not_affected
     justification: vulnerable_code_not_present
     statusNotes: |
       Talos Linux itself doesn't run on Windows, but talosctl CLI tool does. 
       However, talosctl doesn't execute processes with user input.
   - created: 2025-09-10T10:55:00Z
     name: CVE-2007-4998
+    status: not_affected
     justification: vulnerable_code_not_present
     statusNotes: |
       Talos Linux doesn't ship coreutils/busybox.
   - created: 2025-09-10T10:55:00Z
     name: CVE-2023-7042
+    status: not_affected
     justification: vulnerable_code_not_present
     statusNotes: |
       Talos Linux doesn't include wireless drivers.
