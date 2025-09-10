@@ -318,6 +318,27 @@ statements:
       Talos does not build JFS filesystem, so the affected code is not being built.
       https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-arm64#L8904
       https://github.com/siderolabs/pkgs/blob/e2fbfb1fa1188da703b6f237cdc957ee79b41913/kernel/build/config-amd64#L6156
+  - created: 2025-09-10T10:55:00Z
+    name: CVE-2023-3079
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Affects Google Chrome, Talos Linux does not include it.
+  - created: 2025-09-10T10:55:00Z
+    name: CVE-2024-3566
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos Linux itself doesn't run on Windows, but talosctl CLI tool does. 
+      However, talosctl doesn't execute processes with user input.
+  - created: 2025-09-10T10:55:00Z
+    name: CVE-2007-4998
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos Linux doesn't ship coreutils/busybox.
+  - created: 2025-09-10T10:55:00Z
+    name: CVE-2023-7042
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos Linux doesn't include wireless drivers.
 
   ### Old CVEs, not validated, but most likely addressed in mainline by the time of 6.12 release
 
@@ -608,6 +629,26 @@ statements:
       CVE from long before Linux 6.12, considered fixed by the time of disclosure
   - created: 2025-08-07T12:39:00Z
     name: CVE-2023-39180
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-09-10T11:55:00Z
+    name: CVE-2020-25672
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-09-10T11:55:00Z
+    name: CVE-1999-0656
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-09-10T11:55:00Z
+    name: CVE-2024-0193
+    status: fixed
+    statusNotes: |
+      CVE from long before Linux 6.12, considered fixed by the time of disclosure
+  - created: 2025-09-10T11:55:00Z
+    name: CVE-2021-3669
     status: fixed
     statusNotes: |
       CVE from long before Linux 6.12, considered fixed by the time of disclosure
