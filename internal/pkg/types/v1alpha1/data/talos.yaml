@@ -343,6 +343,13 @@ statements:
     justification: vulnerable_code_not_present
     statusNotes: |
       Talos Linux doesn't include wireless drivers.
+  # fixed in Linux 6.2
+  - created: 2025-10-02T13:12:00Z
+    name: CVE-2023-52979
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes:
+      Fixed in upstream Linux 6.2.
 
   ### Old CVEs, not validated, but most likely addressed in mainline by the time of 6.12 release
 
