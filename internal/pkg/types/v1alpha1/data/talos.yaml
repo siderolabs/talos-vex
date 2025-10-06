@@ -351,6 +351,26 @@ statements:
     statusNotes:
       Fixed in upstream Linux 6.2.
 
+  # a pack of OpenSSL vulnerabilities, fixed in OpenSSL 3.5.4, but Talos is not affected
+  - created: 2025-10-06T10:35:00Z
+    name: CVE-2025-9230
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos Linux is not using OpenSSL for TLS, only for cryptsetup key derivation.
+  - created: 2025-10-06T10:35:00Z
+    name: CVE-2025-9231
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos Linux is not using OpenSSL for TLS, only for cryptsetup key derivation.
+  - created: 2025-10-06T10:35:00Z
+    name: CVE-2025-9232
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos Linux is not using OpenSSL for TLS, only for cryptsetup key derivation.
+      
   ### Old CVEs, not validated, but most likely addressed in mainline by the time of 6.12 release
 
   - created: 2025-07-18T20:34:39Z
