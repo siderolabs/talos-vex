@@ -3,5 +3,5 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // SPDX-License-Identifier: MPL-2.0
 
-// CLI subcommands
+// Package cmd includes CLI subcommands.
 package cmd

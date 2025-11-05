@@ -48,6 +48,186 @@ statements:
       This is a very common CVE of Low severity, however if it is a concern you need to configure your firewall
       to reject ICMP timestamp requests. However, this does not have high impact on security in most cases.
 
+  # REMOVE: Linux >= 6.13.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2024-58074
+    status: affected
+    action: "Vulnerability affects Talos when the affected hardware is present and i915 driver is loaded."
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-22108
+    status: affected
+    action: "Vulnerability affects Talos when the affected hardware is present and bnxt driver is loaded."
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-22109
+    status: affected
+    action: "Vulnerability affects Talos when the AX.25 protocol stack is enabled and in use."
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-22121
+    status: affected
+    action: "Vulnerability affects Talos when the ext4 filesystem is mounted and in use."
+
+  # REMOVE: Linux >= 6.13.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-21752
+    status: affected
+    action: "Vulnerability affects Talos when the btrfs filesystem is used on RAID configurations."
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-22117
+    status: affected
+    action: "Vulnerability affects Talos when the affected hardware is present and the ice network driver is loaded."
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-22116
+    status: affected
+    action: "Vulnerability affects Talos when the affected hardware is present and the idpf network driver is loaded."
+
+  # REMOVE: Linux >= 6.13.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-21709
+    status: affected
+    action: "Vulnerability affects Talos when the actions described in the CVE are performed."
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-22111
+    status: affected
+    action: "Vulnerability affects Talos when the actions described in the CVE are performed."
+
+  # REMOVE: Linux >= 6.15
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2024-58093
+    status: affected
+    action: "Vulnerability affects Talos when the actions described in the CVE are performed."
+
+  # REMOVE: Linux >= 6.13.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-21807
+    status: affected
+    action: "Vulnerability affects Talos when the actions described in the CVE are performed."
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-22104
+    status: affected
+    action: "Vulnerability affects Talos when the affected hardware is present and the ibmvnic network driver is loaded."
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-23135
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not target RISC-V architecture, so the affected code is not being built.
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-23131
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos kernel configurations do not enable the affected driver in any build.
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L6442
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L9187
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-22107
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos kernel configurations do not enable the affected driver in any build.
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L1746
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L1725
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2024-58095
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not build JFS filesystem, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L6160
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L8906
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2024-58094
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not build JFS filesystem, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L6160
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L8906
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-22127
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not build F2FS filesystem, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L6185
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L8931
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-23132
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not build F2FS filesystem, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L6185
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L8931
+
+  # REMOVE: Linux >= 6.13.4
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2024-52560
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not build NTFS3 filesystem, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L6247
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L8993
+
+  # REMOVE: Linux >= 6.14
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2024-58015
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos has never enabled WLAN subsystem, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L3048
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L3378
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-23129
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos has never enabled WLAN subsystem, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L3048
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L3378
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2024-58096
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos has never enabled WLAN subsystem, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L3048
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L3378
+
   # REMOVE: Musl >= 1.2.6
   - created: 2025-07-14T12:00:00Z
     name: CVE-2025-26519
@@ -132,7 +312,7 @@ statements:
     # Fixed in Linux 6.12.35, but only reported to be fixed by 6.14.2
     statusNotes: |
       Upstream Linux kernel fixed this vulnerability in version 6.12.35 https://lwn.net/Articles/1027277/.
-      
+
   - created: 2025-07-18T07:47:12Z
     name: CVE-2023-1075
     from: v1.6.0-alpha.2-83-gb44551ccd
@@ -329,7 +509,7 @@ statements:
     status: not_affected
     justification: vulnerable_code_not_present
     statusNotes: |
-      Talos Linux itself doesn't run on Windows, but talosctl CLI tool does. 
+      Talos Linux itself doesn't run on Windows, but talosctl CLI tool does.
       However, talosctl doesn't execute processes with user input.
   - created: 2025-09-10T10:55:00Z
     name: CVE-2007-4998
@@ -370,7 +550,7 @@ statements:
     justification: vulnerable_code_not_present
     statusNotes: |
       Talos Linux is not using OpenSSL for TLS, only for cryptsetup key derivation.
-      
+
   ### Old CVEs, not validated, but most likely addressed in mainline by the time of 6.12 release
 
   - created: 2025-07-18T20:34:39Z

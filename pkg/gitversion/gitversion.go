@@ -18,10 +18,11 @@ import (
 	"golang.org/x/mod/semver"
 )
 
-// Matches e.g. v1.0.0-35-g46d67fe44 -> [v1.0.0, 35]
+// GitRevRegex matches e.g. v1.0.0-35-g46d67fe44 -> [v1.0.0, 35]
 // v1.0.0-alpha.1-35-g46d67fe44 -> [v1.0.0-alpha.1, 35].
 var GitRevRegex = regexp.MustCompile(`^(v\d+\.\d+\.\d+(?:-(?:alpha|beta|rc)\.\d+)?)(?:-(\d+)-g[0-9a-fA-F]+)?(?:-dirty)?$`)
 
+// ValidateVersion validates versions.
 // Valid versions are expected to be in the format:
 // v1.0.0-35-g46d67fe44, v1.0.0-alpha.1, v1.0.0-rc.3,
 // or plain semantic versions like v1.0.0, v2.3.4, etc.
