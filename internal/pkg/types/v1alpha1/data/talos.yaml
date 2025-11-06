@@ -108,6 +108,12 @@ statements:
     status: affected
     action: "Vulnerability affects Talos when the actions described in the CVE are performed."
 
+  # REMOVE: Containerd >= 2.1.5
+  - created: 2025-11-05T15:03:36Z
+    name: GHSA-cgrx-mc8f-2prm
+    status: affected
+    action: "Vulnerability affects Talos when untrusted containers are executed, allowing possible container escape or host denial of service via procfs write redirection."
+
   # REMOVE: Linux >= 6.14.2
   - created: 2025-11-05T15:03:36Z
     name: CVE-2025-22109
@@ -117,7 +123,6 @@ statements:
       Talos kernel configurations do not enable the affected code in any build.
       https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L1900
       https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L1878
-
 
   # REMOVE: Linux >= 6.14.2
   - created: 2025-11-05T15:03:36Z
