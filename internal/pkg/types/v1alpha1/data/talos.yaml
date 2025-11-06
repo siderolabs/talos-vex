@@ -48,6 +48,12 @@ statements:
       This is a very common CVE of Low severity, however if it is a concern you need to configure your firewall
       to reject ICMP timestamp requests. However, this does not have high impact on security in most cases.
 
+  # REMOVE: Linux >= 6.14.3
+  - created: 2025-11-06T09:52:01Z
+    name: CVE-2025-37746
+    status: affected
+    action: "Vulnerability affects Talos when the actions described in the CVE are performed."
+
   # REMOVE: Linux >= 6.13.2
   - created: 2025-11-05T15:03:36Z
     name: CVE-2024-58074
@@ -59,12 +65,6 @@ statements:
     name: CVE-2025-22108
     status: affected
     action: "Vulnerability affects Talos when the affected hardware is present and bnxt driver is loaded."
-
-  # REMOVE: Linux >= 6.14.2
-  - created: 2025-11-05T15:03:36Z
-    name: CVE-2025-22109
-    status: affected
-    action: "Vulnerability affects Talos when the AX.25 protocol stack is enabled and in use."
 
   # REMOVE: Linux >= 6.14.2
   - created: 2025-11-05T15:03:36Z
@@ -83,12 +83,6 @@ statements:
     name: CVE-2025-22117
     status: affected
     action: "Vulnerability affects Talos when the affected hardware is present and the ice network driver is loaded."
-
-  # REMOVE: Linux >= 6.14.2
-  - created: 2025-11-05T15:03:36Z
-    name: CVE-2025-22116
-    status: affected
-    action: "Vulnerability affects Talos when the affected hardware is present and the idpf network driver is loaded."
 
   # REMOVE: Linux >= 6.13.2
   - created: 2025-11-05T15:03:36Z
@@ -116,9 +110,32 @@ statements:
 
   # REMOVE: Linux >= 6.14.2
   - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-22109
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos kernel configurations do not enable the affected code in any build.
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L1900
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L1878
+
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
+    name: CVE-2025-22116
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos kernel configurations do not enable the affected code in any build.
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L2749
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L3016
+
+  # REMOVE: Linux >= 6.14.2
+  - created: 2025-11-05T15:03:36Z
     name: CVE-2025-22104
-    status: affected
-    action: "Vulnerability affects Talos when the affected hardware is present and the ibmvnic network driver is loaded."
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      This is a PPC-specific IBM network driver, not enabled in Talos configs.
 
   # REMOVE: Linux >= 6.14.2
   - created: 2025-11-05T15:03:36Z
@@ -197,6 +214,16 @@ statements:
       Talos does not build NTFS3 filesystem, so the affected code is not being built.
       https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L6247
       https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L8993
+
+  # REMOVE: Linux >= 6.14.3
+  - created: 2025-11-06T09:52:01Z
+    name: CVE-2025-37743
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos has never enabled WLAN subsystem, so the affected code is not being built.
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L3048
+      https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L3378
 
   # REMOVE: Linux >= 6.14
   - created: 2025-11-05T15:03:36Z
