@@ -92,6 +92,7 @@ func ConvertStatements(statements []v1alpha1.Statement, productIDs map[vex.Ident
 		}
 
 		var actionTime *time.Time
+
 		if stmt.ActionTime != "" {
 			actionTimeParsed, err := time.Parse(time.RFC3339, stmt.ActionTime)
 			if err != nil {
@@ -102,6 +103,7 @@ func ConvertStatements(statements []v1alpha1.Statement, productIDs map[vex.Ident
 		}
 
 		var lastUpdated *time.Time
+
 		if stmt.LastUpdated != "" {
 			lastUpdatedParsed, err := time.Parse(time.RFC3339, stmt.LastUpdated)
 			if err != nil {

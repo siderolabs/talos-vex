@@ -12,7 +12,7 @@ import (
 	"os"
 
 	"github.com/openvex/go-vex/pkg/vex"
-	"gopkg.in/yaml.v3"
+	"go.yaml.in/yaml/v4"
 )
 
 type Statement struct {

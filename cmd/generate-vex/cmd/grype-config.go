@@ -11,7 +11,7 @@ import (
 
 	"github.com/openvex/go-vex/pkg/vex"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
+	"go.yaml.in/yaml/v4"
 
 	"github.com/siderolabs/talos-vex/internal/pkg/types/v1alpha1"
 	"github.com/siderolabs/talos-vex/internal/pkg/vexgen"
