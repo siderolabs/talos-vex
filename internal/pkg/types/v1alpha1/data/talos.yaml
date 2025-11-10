@@ -583,6 +583,15 @@ statements:
     statusNotes: |
       Talos Linux is not using OpenSSL for TLS, only for cryptsetup key derivation.
 
+  # Remove once https://github.com/anchore/vunnel/issues/917 is addressed
+  - created: 2025-11-10T14:20:58Z
+    name: CVE-2025-52881
+    from: v1.12.0-alpha.2-13-g54b93aff0
+    status: fixed
+    statusNotes: |
+      Talos uses the fixed 1.3.3 runc version, grype just has incorrect version range for this CVE.
+      https://github.com/siderolabs/talos/commit/54b93aff0c372761dfe9621a782a347b6877c2e9
+
   ### Old CVEs, not validated, but most likely addressed in mainline by the time of 6.12 release
 
   - created: 2025-07-18T20:34:39Z
