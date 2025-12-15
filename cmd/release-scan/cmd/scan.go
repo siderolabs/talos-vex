@@ -19,10 +19,14 @@ import (
 	"github.com/anchore/grype/grype/db/v6/distribution"
 	"github.com/anchore/grype/grype/db/v6/installation"
 	"github.com/anchore/grype/grype/pkg"
+	cdxPresenter "github.com/anchore/grype/grype/presenter/cyclonedx"
 	jsonPresenter "github.com/anchore/grype/grype/presenter/json"
 	"github.com/anchore/grype/grype/presenter/models"
+	sarifPresenter "github.com/anchore/grype/grype/presenter/sarif"
+	tablePresenter "github.com/anchore/grype/grype/presenter/table"
 	"github.com/anchore/grype/grype/vex"
 	"github.com/anchore/grype/grype/vulnerability"
+	"github.com/anchore/syft/syft/sbom"
 	"github.com/google/go-github/v80/github"
 	"github.com/spf13/cobra"
 
@@ -64,15 +68,15 @@ func createVexFile(filepath string, data *v1alpha1.ExploitabilityData, ver strin
 	return nil
 }
 
-func scanSBOM(sbomFilename string, vulnMatcher grype.VulnerabilityMatcher, db vulnerability.Provider) (*models.Document, error) {
-	packages, pkgContext, _, err := pkg.Provide(fmt.Sprintf("sbom:%s", sbomFilename), pkg.ProviderConfig{})
+func scanSBOM(sbomFilename string, vulnMatcher grype.VulnerabilityMatcher, db vulnerability.Provider) (*models.Document, *sbom.SBOM, error) {
+	packages, pkgContext, s, err := pkg.Provide(fmt.Sprintf("sbom:%s", sbomFilename), pkg.ProviderConfig{})
 	if err != nil {
-		return nil, fmt.Errorf("error reading SBOM: %w", err)
+		return nil, nil, fmt.Errorf("error reading SBOM: %w", err)
 	}
 
 	matches, _, err := vulnMatcher.FindMatches(packages, pkgContext)
 	if err != nil {
-		return nil, fmt.Errorf("error scanning SBOM: %w", err)
+		return nil, nil, fmt.Errorf("error scanning SBOM: %w", err)
 	}
 
 	modelDocument, err := models.NewDocument(
@@ -90,10 +94,10 @@ func scanSBOM(sbomFilename string, vulnMatcher grype.VulnerabilityMatcher, db vu
 		true,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("error generating report: %w", err)
+		return nil, nil, fmt.Errorf("error generating report: %w", err)
 	}
 
-	return &modelDocument, nil
+	return &modelDocument, s, nil
 }
 
 func reportJSON(modelDocument models.Document, filename string) error {
@@ -105,8 +109,64 @@ func reportJSON(modelDocument models.Document, filename string) error {
 	presenter := jsonPresenter.NewPresenter(models.PresenterConfig{
 		Document: modelDocument,
 		Pretty:   true,
-		// SBOM:     s,
 	})
+
+	if err = presenter.Present(f); err != nil {
+		return fmt.Errorf("error presenting report file: %w", err)
+	}
+
+	return nil
+}
+
+func reportCyclonedxJSON(modelDocument models.Document, filename string, s *sbom.SBOM) error {
+	f, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
+	if err != nil {
+		return fmt.Errorf("error creating report file: %w", err)
+	}
+
+	presenter := cdxPresenter.NewJSONPresenter(models.PresenterConfig{
+		Document: modelDocument,
+		Pretty:   true,
+		SBOM:     s,
+	})
+
+	if err = presenter.Present(f); err != nil {
+		return fmt.Errorf("error presenting report file: %w", err)
+	}
+
+	return nil
+}
+
+func reportSARIF(modelDocument models.Document, filename string, s *sbom.SBOM) error {
+	f, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
+	if err != nil {
+		return fmt.Errorf("error creating report file: %w", err)
+	}
+
+	presenter := sarifPresenter.NewPresenter(models.PresenterConfig{
+		Document: modelDocument,
+		Pretty:   true,
+		SBOM:     s,
+	})
+
+	if err = presenter.Present(f); err != nil {
+		return fmt.Errorf("error presenting report file: %w", err)
+	}
+
+	return nil
+}
+
+func reportTable(modelDocument models.Document, filename string) error {
+	f, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
+	if err != nil {
+		return fmt.Errorf("error creating report file: %w", err)
+	}
+
+	presenter := tablePresenter.NewPresenter(models.PresenterConfig{
+		Document: modelDocument,
+		Pretty:   true,
+		// SBOM:     s,
+	}, false)
 
 	if err = presenter.Present(f); err != nil {
 		return fmt.Errorf("error presenting report file: %w", err)
@@ -249,7 +309,7 @@ var scanCmd = &cobra.Command{
 						fmt.Fprintf(os.Stderr, "error downloading %s: %s", *asset.Name, err)
 					}
 
-					modelDocument, err := scanSBOM(sbomFilename, vulnMatcher, db)
+					modelDocument, s, err := scanSBOM(sbomFilename, vulnMatcher, db)
 					if err != nil {
 						fmt.Fprintf(os.Stderr, "error scanning: %s", err)
 
@@ -257,6 +317,24 @@ var scanCmd = &cobra.Command{
 					}
 
 					if err = reportJSON(*modelDocument, path.Join(verDir, *asset.Name+"-report.json")); err != nil {
+						fmt.Fprintf(os.Stderr, "error reporting: %s", err)
+
+						return
+					}
+
+					if err = reportCyclonedxJSON(*modelDocument, path.Join(verDir, *asset.Name+"-report.cdx.json"), s); err != nil {
+						fmt.Fprintf(os.Stderr, "error reporting: %s", err)
+
+						return
+					}
+
+					if err = reportSARIF(*modelDocument, path.Join(verDir, *asset.Name+"-report.sarif.json"), s); err != nil {
+						fmt.Fprintf(os.Stderr, "error reporting: %s", err)
+
+						return
+					}
+
+					if err = reportTable(*modelDocument, path.Join(verDir, *asset.Name+"-report.table.txt")); err != nil {
 						fmt.Fprintf(os.Stderr, "error reporting: %s", err)
 
 						return
@@ -289,6 +367,6 @@ func init() {
 	scanCmd.Flags().StringVarP(&options.Repo, "repo", "r", "talos", "GitHub repo to get releases from")
 	scanCmd.Flags().StringVarP(&options.OutputDir, "output-dir", "O", "_out", "Directory to save results to")
 	// At least currently SBOMs are not arch-dependent
-	scanCmd.Flags().StringVarP(&options.MatchFiles, "match", "m", ".*\\-arm64.spdx\\.json$", "Directory to save results to")
+	scanCmd.Flags().StringVarP(&options.MatchFiles, "match", "m", ".*\\-arm64.spdx\\.json$", "Regex for SBOM files to scan in each release")
 	rootCmd.AddCommand(scanCmd)
 }
