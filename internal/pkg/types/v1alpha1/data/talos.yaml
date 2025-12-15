@@ -114,6 +114,36 @@ statements:
     status: affected
     action: "Vulnerability affects Talos when untrusted containers are executed, allowing possible container escape or host denial of service via procfs write redirection."
 
+  - created: 2025-12-15T14:51:00Z
+    name: CVE-2025-39910
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 on arm64 with KASAN enabled."
+
+  - created: 2025-12-15T14:51:00Z
+    name: CVE-2025-38311
+    status: affected
+    action: "Affects Talos Linux < 1.12.0."
+
+  - created: 2025-12-15T14:51:00Z
+    name: CVE-2025-38234
+    status: affected
+    action: "Affects Talos Linux < 1.12.0."
+
+  - created: 2025-12-15T14:51:00Z
+    name: CVE-2025-39762
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 if amdgpu extension is included and loaded."
+
+  - created: 2025-12-15T14:51:00Z
+    name: CVE-2025-38207
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 when uprobes are used."
+
+  - created: 2025-12-15T14:51:00Z
+    name: CVE-2025-37906
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 when io_uring is used."
+
   # REMOVE: Linux >= 6.14.2
   - created: 2025-11-05T15:03:36Z
     name: CVE-2025-22109
@@ -472,6 +502,13 @@ statements:
       Upstream Linux kernel fixed this vulnerability in v6.6 by commit cfaa80c91f6f99b9342b6557f0f0e1143e434066,
       which was first included when Talos started using the 6.6 kernel.
       https://github.com/gregkh/linux/commit/cfaa80c91f6f99b9342b6557f0f0e1143e434066
+  - created: 2025-12-15T14:51:00Z
+    name: CVE-2025-37880
+    from: v1.11.0
+    # Fixed in Linux 6.12.26
+    status: fixed
+    statusNotes: |
+      See https://lore.kernel.org/linux-cve-announce/2025050943-CVE-2025-37880-3f3c@gregkh/
 
     # TODO: Remove with Linux >= 6.16
   - created: 2025-08-06T10:58:00Z
@@ -562,6 +599,24 @@ statements:
     justification: vulnerable_code_not_present
     statusNotes:
       Fixed in upstream Linux 6.2.
+  - created: 2025-12-15T14:51:00Z
+    name: CVE-2025-38261
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not ship RISC-V builds.
+  - created: 2025-12-15T14:51:00Z
+    name: CVE-2025-39745
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Only affects PREEMPT_RT kernels, Talos does not use PREEMPT_RT.
+  - created: 2025-12-15T14:51:00Z
+    name: CVE-2025-38284
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not ship WiFi support.
 
   # a pack of OpenSSL vulnerabilities, fixed in OpenSSL 3.5.4, but Talos is not affected
   - created: 2025-10-06T10:35:00Z
