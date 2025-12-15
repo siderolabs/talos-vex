@@ -250,6 +250,7 @@ var scanCmd = &cobra.Command{
 		rl, res, err := client.RateLimit.Get(context.TODO())
 		fmt.Println("INFO: GitHub API rate info", rl, res, err)
 		sbomRegex := regexp.MustCompile(options.MatchFiles)
+		skipRegex := regexp.MustCompile(options.SkipTags)
 		page := 0
 		for {
 			releases, result, err := client.Repositories.ListReleases(context.TODO(), options.Owner, options.Repo, &github.ListOptions{PerPage: 100, Page: page})
@@ -266,7 +267,7 @@ var scanCmd = &cobra.Command{
 				verDir := path.Join(options.OutputDir, ver)
 
 				cmp := gitversion.CompareVersions(ver, options.Version)
-				if cmp < 0 {
+				if cmp < 0 || skipRegex.MatchString(ver) {
 					continue
 				}
 
@@ -362,11 +363,12 @@ var scanCmd = &cobra.Command{
 
 func init() {
 	scanCmd.Flags().StringVarP(&options.DataFile, "source-file", "", "", "Path to the YAML file containing data for VEX generation")
-	scanCmd.Flags().StringVarP(&options.Version, "from", "", "v1.11.0-beta.0", "Minimum version that should be scanned")
+	scanCmd.Flags().StringVarP(&options.Version, "from", "", "v1.11.0", "Minimum version that should be scanned")
 	scanCmd.Flags().StringVarP(&options.Owner, "owner", "o", "siderolabs", "GitHub repo owner")
 	scanCmd.Flags().StringVarP(&options.Repo, "repo", "r", "talos", "GitHub repo to get releases from")
 	scanCmd.Flags().StringVarP(&options.OutputDir, "output-dir", "O", "_out", "Directory to save results to")
 	// At least currently SBOMs are not arch-dependent
 	scanCmd.Flags().StringVarP(&options.MatchFiles, "match", "m", ".*\\-arm64.spdx\\.json$", "Regex for SBOM files to scan in each release")
+	scanCmd.Flags().StringVarP(&options.SkipTags, "skip", "", "(alpha|beta|rc)", "Regex of versions to skip (e.g. unsupported prereleases)")
 	rootCmd.AddCommand(scanCmd)
 }

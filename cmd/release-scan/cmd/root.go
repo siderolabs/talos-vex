@@ -19,6 +19,7 @@ type Options struct {
 	Repo       string
 	OutputDir  string
 	MatchFiles string
+	SkipTags   string
 }
 
 var options Options
