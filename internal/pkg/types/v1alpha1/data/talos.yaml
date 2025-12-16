@@ -144,6 +144,111 @@ statements:
     status: affected
     action: "Affects Talos Linux < 1.12.0 when io_uring is used."
 
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38137
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (PCI_PWRCTRL)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38426
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (amdgpu driver)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-39905
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (PHY framework)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38584
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (PADATA framework)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38248
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (bridge multicast)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38029
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (arm64 with KASAN enabled)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38036
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (only if `xe` extension is loaded)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38140
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (device mapper zoned framework)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38041
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (arm64, sunxi-ng driver)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38064
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (virtio-console)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-40325
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (md_raid10)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38591
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (eBPF verifier)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38621
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (md raid)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-39677
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (net_sched framework)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-39775
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (log spamming in mm framework)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-39822
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (io_uring subsystem)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-39830
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (mlx5 driver)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-39834
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (mlx5 driver)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38205
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (amdgpu drivers)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-39764
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (netfilter conntrack)."
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-39861
+    status: affected
+    action: "Affects Talos Linux < 1.12.0 (arm64 only, DRM Rockchip)."
+
   # REMOVE: Linux >= 6.14.2
   - created: 2025-11-05T15:03:36Z
     name: CVE-2025-22109
@@ -289,6 +394,111 @@ statements:
       Talos has never enabled WLAN subsystem, so the affected code is not being built.
       https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-amd64#L3048
       https://github.com/siderolabs/pkgs/blob/4fecfeb508fb7e13a6455a2c99816f9f7d9e8b52/kernel/build/config-arm64#L3378
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38421
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not enable AMD PMF.
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-39859
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not enable CONFIG_PTP_1588_CLOCK_OCP.
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-39862
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not enable WiFi drivers.
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38636
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not enable RV framework.
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38187
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not enable DRM nouveau driver.
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38627
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not enable f2fs.
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38656
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not WiFi drivers.
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38042
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not enable TI_K3_UDMA.
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38132
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not enable CoreSight tracing.
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-39789
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not enable CONFIG_CRYPTO_AEGIS128.
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-39833
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not enable ISDN subsystem.
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-39925
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not enable CAN j1939 driver.
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38199
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not enable WiFi drivers.
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38359
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not build S390.
+
+  - created: 2025-12-16T10:20:00Z
+    name: CVE-2025-38605
+    status: not_affected
+    justification: vulnerable_code_not_present
+    statusNotes: |
+      Talos does not build WiFi drivers.
 
   # REMOVE: Musl >= 1.2.6
   - created: 2025-07-14T12:00:00Z
