@@ -245,7 +245,7 @@ statements:
     action: "Affects Talos Linux < 1.12.0 (netfilter conntrack)."
 
   - created: 2025-12-16T10:20:00Z
-    name: CVE-2025-39861
+    name: CVE-2025-38597
     status: affected
     action: "Affects Talos Linux < 1.12.0 (arm64 only, DRM Rockchip)."
 
