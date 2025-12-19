@@ -29,6 +29,7 @@ import (
 	"github.com/anchore/syft/syft/sbom"
 	"github.com/google/go-github/v80/github"
 	"github.com/spf13/cobra"
+	"github.com/wagoodman/go-presenter"
 
 	"github.com/siderolabs/talos-vex/internal/pkg/types/v1alpha1"
 	"github.com/siderolabs/talos-vex/internal/pkg/vexgen"
@@ -46,11 +47,53 @@ func loadGrypeDB() (vulnerability.Provider, error) {
 	if status == nil || status.Error != nil {
 		return nil, err
 	}
+
 	return db, nil
 }
 
-func createVexFile(filepath string, data *v1alpha1.ExploitabilityData, ver string) error {
-	doc, err := vexgen.Populate(data, ver, nil)
+func formatReport(modelDocument models.Document, filename string, s *sbom.SBOM, format string) error {
+	f, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
+	if err != nil {
+		return fmt.Errorf("error creating report file: %w", err)
+	}
+
+	config := models.PresenterConfig{
+		Document: modelDocument,
+		Pretty:   true,
+		SBOM:     s,
+	}
+
+	var presenter presenter.Presenter
+
+	switch format {
+	case "json":
+		presenter = jsonPresenter.NewPresenter(config)
+	case "table":
+		presenter = tablePresenter.NewPresenter(config, false)
+	case "sarif":
+		presenter = sarifPresenter.NewPresenter(config)
+	case "cdx":
+		presenter = cdxPresenter.NewJSONPresenter(config)
+	default:
+		return fmt.Errorf("unknown format: %s", format)
+	}
+
+	if err = presenter.Present(f); err != nil {
+		return fmt.Errorf("error presenting report file: %w", err)
+	}
+
+	return nil
+}
+
+type scanner struct {
+	client    *github.Client
+	db        vulnerability.Provider
+	vexData   *v1alpha1.ExploitabilityData
+	sbomRegex *regexp.Regexp
+}
+
+func (sc *scanner) createVexFile(filepath string, ver string) error {
+	doc, err := vexgen.Populate(sc.vexData, ver, nil)
 	if err != nil {
 		return fmt.Errorf("error populating VEX document: %w", err)
 	}
@@ -68,8 +111,8 @@ func createVexFile(filepath string, data *v1alpha1.ExploitabilityData, ver strin
 	return nil
 }
 
-func scanSBOM(sbomFilename string, vulnMatcher grype.VulnerabilityMatcher, db vulnerability.Provider) (*models.Document, *sbom.SBOM, error) {
-	packages, pkgContext, s, err := pkg.Provide(fmt.Sprintf("sbom:%s", sbomFilename), pkg.ProviderConfig{})
+func (sc *scanner) scanSBOM(sbomPath string, vulnMatcher grype.VulnerabilityMatcher) (*models.Document, *sbom.SBOM, error) {
+	packages, pkgContext, s, err := pkg.Provide(fmt.Sprintf("sbom:%s", sbomPath), pkg.ProviderConfig{})
 	if err != nil {
 		return nil, nil, fmt.Errorf("error reading SBOM: %w", err)
 	}
@@ -87,7 +130,7 @@ func scanSBOM(sbomFilename string, vulnMatcher grype.VulnerabilityMatcher, db vu
 		pkgContext,
 		*matches,
 		nil, // Do not report vulnerabilities suppressed by VEX (fixed/not_affected)
-		db,
+		sc.db,
 		nil,
 		nil,
 		models.SortByPackage,
@@ -100,83 +143,8 @@ func scanSBOM(sbomFilename string, vulnMatcher grype.VulnerabilityMatcher, db vu
 	return &modelDocument, s, nil
 }
 
-func reportJSON(modelDocument models.Document, filename string) error {
-	f, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
-	if err != nil {
-		return fmt.Errorf("error creating report file: %w", err)
-	}
-
-	presenter := jsonPresenter.NewPresenter(models.PresenterConfig{
-		Document: modelDocument,
-		Pretty:   true,
-	})
-
-	if err = presenter.Present(f); err != nil {
-		return fmt.Errorf("error presenting report file: %w", err)
-	}
-
-	return nil
-}
-
-func reportCyclonedxJSON(modelDocument models.Document, filename string, s *sbom.SBOM) error {
-	f, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
-	if err != nil {
-		return fmt.Errorf("error creating report file: %w", err)
-	}
-
-	presenter := cdxPresenter.NewJSONPresenter(models.PresenterConfig{
-		Document: modelDocument,
-		Pretty:   true,
-		SBOM:     s,
-	})
-
-	if err = presenter.Present(f); err != nil {
-		return fmt.Errorf("error presenting report file: %w", err)
-	}
-
-	return nil
-}
-
-func reportSARIF(modelDocument models.Document, filename string, s *sbom.SBOM) error {
-	f, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
-	if err != nil {
-		return fmt.Errorf("error creating report file: %w", err)
-	}
-
-	presenter := sarifPresenter.NewPresenter(models.PresenterConfig{
-		Document: modelDocument,
-		Pretty:   true,
-		SBOM:     s,
-	})
-
-	if err = presenter.Present(f); err != nil {
-		return fmt.Errorf("error presenting report file: %w", err)
-	}
-
-	return nil
-}
-
-func reportTable(modelDocument models.Document, filename string) error {
-	f, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
-	if err != nil {
-		return fmt.Errorf("error creating report file: %w", err)
-	}
-
-	presenter := tablePresenter.NewPresenter(models.PresenterConfig{
-		Document: modelDocument,
-		Pretty:   true,
-		// SBOM:     s,
-	}, false)
-
-	if err = presenter.Present(f); err != nil {
-		return fmt.Errorf("error presenting report file: %w", err)
-	}
-
-	return nil
-}
-
-func downloadAsset(client *github.Client, asset github.ReleaseAsset, dir string) (string, error) {
-	rc, _, err := client.Repositories.DownloadReleaseAsset(
+func (sc *scanner) downloadAsset(asset github.ReleaseAsset, dir string) (string, error) {
+	rc, _, err := sc.client.Repositories.DownloadReleaseAsset(
 		context.TODO(),
 		options.Owner,
 		options.Repo,
@@ -203,13 +171,91 @@ func downloadAsset(client *github.Client, asset github.ReleaseAsset, dir string)
 	return filename, err
 }
 
+func (sc *scanner) scanRelease(release github.RepositoryRelease) error {
+	version := *release.Name
+	dir := path.Join(options.OutputDir, version)
+
+	err := os.MkdirAll(dir, 0o755)
+	if err != nil {
+		return fmt.Errorf("error creating version workdir: %w", err)
+	}
+
+	fmt.Println("Scanning version:", version)
+
+	vexPath := path.Join(dir, "vex.json")
+
+	err = sc.createVexFile(vexPath, version)
+	if err != nil {
+		return fmt.Errorf("error creating VEX: %w", err)
+	}
+
+	vexProcessor, err := vex.NewProcessor(vex.ProcessorOptions{
+		Documents: []string{vexPath},
+	})
+	if err != nil {
+		return fmt.Errorf("error initializing Grype VEX processor: %w", err)
+	}
+
+	vulnMatcher := grype.VulnerabilityMatcher{
+		VulnerabilityProvider: sc.db,
+		VexProcessor:          vexProcessor,
+	}
+
+	for _, asset := range release.Assets {
+		if !sc.sbomRegex.MatchString(*asset.Name) {
+			continue
+		}
+
+		var sbomFilename string
+
+		fmt.Println("- downloading", *asset.Name)
+
+		if sbomFilename, err = sc.downloadAsset(*asset, dir); err != nil {
+			return fmt.Errorf("error downloading %s: %w", *asset.Name, err)
+		}
+
+		modelDocument, s, err := sc.scanSBOM(sbomFilename, vulnMatcher)
+		if err != nil {
+			return fmt.Errorf("error scanning: %w", err)
+		}
+
+		for _, reporter := range []struct {
+			format string
+			suffix string
+		}{
+			{
+				format: "json",
+				suffix: "-report.json",
+			}, {
+				format: "cdx",
+				suffix: "-report.cdx.json",
+			}, {
+				format: "sarif",
+				suffix: "-report.sarif.json",
+			}, {
+				format: "table",
+				suffix: "-report.table.txt",
+			},
+		} {
+			if err = formatReport(
+				*modelDocument,
+				path.Join(dir, *asset.Name+reporter.suffix),
+				s,
+				reporter.format,
+			); err != nil {
+				return fmt.Errorf("error reporting: %w", err)
+			}
+		}
+	}
+
+	return nil
+}
+
 var scanCmd = &cobra.Command{
 	Use:   "scan",
 	Short: "Scan releases matching the rules",
 	Long: `Scan releases matching the rules, using the provided VEX YAML source
-	Usage: release-scan scan --source-file <path> --from <version>
-	Source file should be a YAML file containing exploitability data.
-	Start version is the minimum version of the product to scan.`,
+	Usage: release-scan scan`,
 	Args: cobra.NoArgs,
 	Run: func(_ *cobra.Command, _ []string) {
 		err := os.MkdirAll(options.OutputDir, 0o755)
@@ -239,17 +285,19 @@ var scanCmd = &cobra.Command{
 			return
 		}
 
-		var db vulnerability.Provider
-		if db, err = loadGrypeDB(); err != nil {
+		sc := scanner{
+			client:    client,
+			vexData:   data,
+			sbomRegex: regexp.MustCompile(options.MatchFiles),
+		}
+
+		if sc.db, err = loadGrypeDB(); err != nil {
 			fmt.Fprintf(os.Stderr, "error loading vulnerability db: %s", err)
 
 			return
 		}
-		defer db.Close()
+		defer sc.db.Close()
 
-		rl, res, err := client.RateLimit.Get(context.TODO())
-		fmt.Println("INFO: GitHub API rate info", rl, res, err)
-		sbomRegex := regexp.MustCompile(options.MatchFiles)
 		skipRegex := regexp.MustCompile(options.SkipTags)
 		page := 0
 		for {
@@ -264,87 +312,22 @@ var scanCmd = &cobra.Command{
 
 			for _, release := range releases {
 				ver := release.GetTagName()
-				verDir := path.Join(options.OutputDir, ver)
 
 				cmp := gitversion.CompareVersions(ver, options.Version)
 				if cmp < 0 || skipRegex.MatchString(ver) {
 					continue
 				}
 
-				err := os.MkdirAll(verDir, 0o755)
-				if err != nil {
-					fmt.Fprintln(os.Stderr, "error creating version workdir: %w", err)
-				}
+				if err := sc.scanRelease(*release); err != nil {
+					fmt.Println("Scan failed:", err)
 
-				fmt.Println("ver:", ver)
-				vexPath := path.Join(verDir, "vex.json")
-
-				err = createVexFile(vexPath, data, ver)
-				if err != nil {
-					fmt.Fprintf(os.Stderr, "error creating VEX: %s", err)
-
-					return
-				}
-
-				vexProcessor, err := vex.NewProcessor(vex.ProcessorOptions{
-					Documents: []string{vexPath},
-				})
-				if err != nil {
-					fmt.Fprintf(os.Stderr, "error initializing Grype VEX processor: %s", err)
-					return
-				}
-
-				vulnMatcher := grype.VulnerabilityMatcher{
-					VulnerabilityProvider: db,
-					VexProcessor:          vexProcessor,
-				}
-
-				for _, asset := range release.Assets {
-					if !sbomRegex.MatchString(*asset.Name) {
-						continue
-					}
-
-					var sbomFilename string
-					fmt.Println("- downloading", *asset.Name)
-					if sbomFilename, err = downloadAsset(client, *asset, verDir); err != nil {
-						fmt.Fprintf(os.Stderr, "error downloading %s: %s", *asset.Name, err)
-					}
-
-					modelDocument, s, err := scanSBOM(sbomFilename, vulnMatcher, db)
-					if err != nil {
-						fmt.Fprintf(os.Stderr, "error scanning: %s", err)
-
-						return
-					}
-
-					if err = reportJSON(*modelDocument, path.Join(verDir, *asset.Name+"-report.json")); err != nil {
-						fmt.Fprintf(os.Stderr, "error reporting: %s", err)
-
-						return
-					}
-
-					if err = reportCyclonedxJSON(*modelDocument, path.Join(verDir, *asset.Name+"-report.cdx.json"), s); err != nil {
-						fmt.Fprintf(os.Stderr, "error reporting: %s", err)
-
-						return
-					}
-
-					if err = reportSARIF(*modelDocument, path.Join(verDir, *asset.Name+"-report.sarif.json"), s); err != nil {
-						fmt.Fprintf(os.Stderr, "error reporting: %s", err)
-
-						return
-					}
-
-					if err = reportTable(*modelDocument, path.Join(verDir, *asset.Name+"-report.table.txt")); err != nil {
-						fmt.Fprintf(os.Stderr, "error reporting: %s", err)
-
-						return
-					}
+					break
 				}
 
 				// GitHub returns releases ordered from newest to oldest, therefore we're done when reached the oldest scanned version
 				if cmp == 0 {
 					done = true
+
 					break
 				}
 			}
@@ -355,9 +338,6 @@ var scanCmd = &cobra.Command{
 
 			page = result.NextPage
 		}
-
-		rl, res, err = client.RateLimit.Get(context.TODO())
-		fmt.Println("INFO: GitHub API rate info", rl, res, err)
 	},
 }
 

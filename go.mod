@@ -5,11 +5,13 @@ go 1.25.4
 require (
 	github.com/anchore/clio v0.0.0-20250715152405-a0fa658e5084
 	github.com/anchore/grype v0.104.2
+	github.com/anchore/syft v1.38.2
 	github.com/google/go-github/v80 v80.0.1-0.20251210135802-1830689bcbcb
 	github.com/openvex/go-vex v0.2.7
 	github.com/rodaine/table v1.3.0
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
+	github.com/wagoodman/go-presenter v0.0.0-20211015174752-f9c01afc824b
 	go.yaml.in/yaml/v4 v4.0.0-rc.3
 	golang.org/x/mod v0.31.0
 )
@@ -58,7 +60,6 @@ require (
 	github.com/anchore/go-version v1.2.2-0.20210903204242-51efa5b487c4 // indirect
 	github.com/anchore/packageurl-go v0.1.1-0.20250220190351-d62adb6e1115 // indirect
 	github.com/anchore/stereoscope v0.1.14 // indirect
-	github.com/anchore/syft v1.38.2 // indirect
 	github.com/andybalholm/brotli v1.2.0 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/aquasecurity/go-pep440-version v0.0.1 // indirect
