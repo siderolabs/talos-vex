@@ -13,13 +13,13 @@ import (
 )
 
 type Options struct {
-	DataFile   string
-	Version    string
-	Owner      string
-	Repo       string
-	OutputDir  string
-	MatchFiles string
-	SkipTags   string
+	DataFile     string
+	StartVersion string
+	Owner        string
+	Repo         string
+	OutputDir    string
+	MatchFiles   string
+	SkipTags     string
 }
 
 var options Options

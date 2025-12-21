@@ -6,16 +6,14 @@
 package scanner
 
 import (
-	"context"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"path"
-	"regexp"
 
 	"github.com/anchore/clio"
 	"github.com/anchore/grype/grype"
+	"github.com/anchore/grype/grype/db/v6/distribution"
+	"github.com/anchore/grype/grype/db/v6/installation"
 	"github.com/anchore/grype/grype/pkg"
 	cdxPresenter "github.com/anchore/grype/grype/presenter/cyclonedx"
 	jsonPresenter "github.com/anchore/grype/grype/presenter/json"
@@ -25,7 +23,6 @@ import (
 	"github.com/anchore/grype/grype/vex"
 	"github.com/anchore/grype/grype/vulnerability"
 	"github.com/anchore/syft/syft/sbom"
-	"github.com/google/go-github/v80/github"
 	"github.com/wagoodman/go-presenter"
 
 	"github.com/siderolabs/talos-vex/internal/pkg/types/v1alpha1"
@@ -67,18 +64,36 @@ func formatReport(modelDocument models.Document, filename string, s *sbom.SBOM, 
 }
 
 type Scanner struct {
-	GithubClient *github.Client
-	Owner        string
-	Repo         string
-	OutputDir    string
+	db      vulnerability.Provider
+	vexData *v1alpha1.ExploitabilityData
+}
 
-	DB        vulnerability.Provider
-	VexData   *v1alpha1.ExploitabilityData
-	SbomRegex *regexp.Regexp
+// NewScanner creates a scanner with given exploitability data and loads a DB.
+func NewScanner(vexData *v1alpha1.ExploitabilityData) (*Scanner, error) {
+	db, status, err := grype.LoadVulnerabilityDB(
+		distribution.DefaultConfig(),
+		installation.DefaultConfig(clio.Identification{
+			Name: "talos-vex",
+		}),
+		true,
+	)
+	if status == nil || status.Error != nil {
+		return nil, err
+	}
+
+	return &Scanner{
+		vexData: vexData,
+		db:      db,
+	}, nil
+}
+
+// Close closes the scanner, unloading the vulnerability database.
+func (sc *Scanner) Close() error {
+	return sc.db.Close()
 }
 
 func (sc *Scanner) createVexFile(filepath string, ver string) error {
-	doc, err := vexgen.Populate(sc.VexData, ver, nil)
+	doc, err := vexgen.Populate(sc.vexData, ver, nil)
 	if err != nil {
 		return fmt.Errorf("error populating VEX document: %w", err)
 	}
@@ -115,7 +130,7 @@ func (sc *Scanner) scanSBOM(sbomPath string, vulnMatcher grype.VulnerabilityMatc
 		pkgContext,
 		*matches,
 		nil, // Do not report vulnerabilities suppressed by VEX (fixed/not_affected)
-		sc.DB,
+		sc.db,
 		nil,
 		nil,
 		models.SortByPackage,
@@ -128,49 +143,11 @@ func (sc *Scanner) scanSBOM(sbomPath string, vulnMatcher grype.VulnerabilityMatc
 	return &modelDocument, s, nil
 }
 
-func (sc *Scanner) downloadAsset(asset github.ReleaseAsset, dir string) (string, error) {
-	rc, _, err := sc.GithubClient.Repositories.DownloadReleaseAsset(
-		context.TODO(),
-		sc.Owner,
-		sc.Repo,
-		*asset.ID,
-		http.DefaultClient,
-	)
-	if err != nil {
-		return "", err
-	}
-
-	filename := path.Join(dir, *asset.Name)
-
-	f, err := os.OpenFile(
-		filename,
-		os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644,
-	)
-	if err != nil {
-		return "", err
-	}
-	defer f.Close()
-
-	_, err = io.Copy(f, rc)
-
-	return filename, err
-}
-
 // ScanRelease scans matching SBOMs found in the passed GitHub release.
-func (sc *Scanner) ScanRelease(release github.RepositoryRelease) error {
-	version := *release.Name
-	dir := path.Join(sc.OutputDir, version)
+func (sc *Scanner) ScanRelease(version, workdir string, sbomFiles []string) error {
+	vexPath := path.Join(workdir, "vex.json")
 
-	err := os.MkdirAll(dir, 0o755)
-	if err != nil {
-		return fmt.Errorf("error creating version workdir: %w", err)
-	}
-
-	fmt.Println("Scanning version:", version)
-
-	vexPath := path.Join(dir, "vex.json")
-
-	err = sc.createVexFile(vexPath, version)
+	err := sc.createVexFile(vexPath, version)
 	if err != nil {
 		return fmt.Errorf("error creating VEX: %w", err)
 	}
@@ -183,24 +160,12 @@ func (sc *Scanner) ScanRelease(release github.RepositoryRelease) error {
 	}
 
 	vulnMatcher := grype.VulnerabilityMatcher{
-		VulnerabilityProvider: sc.DB,
+		VulnerabilityProvider: sc.db,
 		VexProcessor:          vexProcessor,
 	}
 
-	for _, asset := range release.Assets {
-		if !sc.SbomRegex.MatchString(*asset.Name) {
-			continue
-		}
-
-		var sbomFilename string
-
-		fmt.Println("- downloading", *asset.Name)
-
-		if sbomFilename, err = sc.downloadAsset(*asset, dir); err != nil {
-			return fmt.Errorf("error downloading %s: %w", *asset.Name, err)
-		}
-
-		modelDocument, s, err := sc.scanSBOM(sbomFilename, vulnMatcher)
+	for _, sbomFile := range sbomFiles {
+		modelDocument, s, err := sc.scanSBOM(path.Join(workdir, sbomFile), vulnMatcher)
 		if err != nil {
 			return fmt.Errorf("error scanning: %w", err)
 		}
@@ -225,7 +190,7 @@ func (sc *Scanner) ScanRelease(release github.RepositoryRelease) error {
 		} {
 			if err = formatReport(
 				*modelDocument,
-				path.Join(dir, *asset.Name+reporter.suffix),
+				path.Join(workdir, sbomFile+reporter.suffix),
 				s,
 				reporter.format,
 			); err != nil {

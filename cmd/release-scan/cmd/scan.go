@@ -8,14 +8,12 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
+	"path"
 	"regexp"
 
-	"github.com/anchore/clio"
-	"github.com/anchore/grype/grype"
-	"github.com/anchore/grype/grype/db/v6/distribution"
-	"github.com/anchore/grype/grype/db/v6/installation"
-	"github.com/anchore/grype/grype/vulnerability"
 	"github.com/google/go-github/v80/github"
 	"github.com/spf13/cobra"
 
@@ -24,19 +22,32 @@ import (
 	"github.com/siderolabs/talos-vex/pkg/gitversion"
 )
 
-func loadGrypeDB() (vulnerability.Provider, error) {
-	db, status, err := grype.LoadVulnerabilityDB(
-		distribution.DefaultConfig(),
-		installation.DefaultConfig(clio.Identification{
-			Name: "talos-vex",
-		}),
-		true,
+func downloadAsset(githubClient *github.Client, owner, repo string, asset github.ReleaseAsset, dir string) (string, error) {
+	rc, _, err := githubClient.Repositories.DownloadReleaseAsset(
+		context.TODO(),
+		owner,
+		repo,
+		*asset.ID,
+		http.DefaultClient,
 	)
-	if status == nil || status.Error != nil {
-		return nil, err
+	if err != nil {
+		return "", err
 	}
 
-	return db, nil
+	name := *asset.Name
+
+	f, err := os.OpenFile(
+		path.Join(dir, name),
+		os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644,
+	)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	_, err = io.Copy(f, rc)
+
+	return name, err
 }
 
 var scanCmd = &cobra.Command{
@@ -73,24 +84,24 @@ var scanCmd = &cobra.Command{
 			return
 		}
 
-		sc := scanner.Scanner{
-			GithubClient: client,
-			Owner:        options.Owner,
-			Repo:         options.Repo,
-			OutputDir:    options.OutputDir,
-
-			VexData:   data,
-			SbomRegex: regexp.MustCompile(options.MatchFiles),
-		}
-
-		if sc.DB, err = loadGrypeDB(); err != nil {
-			fmt.Fprintf(os.Stderr, "error loading vulnerability db: %s\n", err)
+		sc, err := scanner.NewScanner(data)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error creating scanner: %s\n", err)
 
 			return
 		}
-		defer sc.DB.Close()
 
+		defer sc.Close()
+
+		sbomRegex := regexp.MustCompile(options.MatchFiles)
 		skipRegex := regexp.MustCompile(options.SkipTags)
+
+		if skipRegex.MatchString(options.StartVersion) {
+			fmt.Fprintf(os.Stderr, "Start version %s is in ignore regex\n", options.StartVersion)
+
+			return
+		}
+
 		page := 0
 		for {
 			releases, result, err := client.Repositories.ListReleases(context.TODO(), options.Owner, options.Repo, &github.ListOptions{PerPage: 100, Page: page})
@@ -105,12 +116,40 @@ var scanCmd = &cobra.Command{
 			for _, release := range releases {
 				ver := release.GetTagName()
 
-				cmp := gitversion.CompareVersions(ver, options.Version)
+				cmp := gitversion.CompareVersions(ver, options.StartVersion)
 				if cmp < 0 || skipRegex.MatchString(ver) {
 					continue
 				}
 
-				if err := sc.ScanRelease(*release); err != nil {
+				dir := path.Join(options.OutputDir, ver)
+				sbomFiles := []string{}
+
+				err := os.MkdirAll(dir, 0o755)
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "error creating version workdir: %s\n", err)
+
+					continue
+				}
+
+				fmt.Println("Scanning version:", ver)
+
+				for _, asset := range release.Assets {
+					if !sbomRegex.MatchString(*asset.Name) {
+						continue
+					}
+
+					fmt.Println("- downloading", *asset.Name)
+					sbomFilename, err := downloadAsset(client, options.Owner, options.Repo, *asset, dir)
+					if err != nil {
+						fmt.Fprintf(os.Stderr, "error downloading %s: %s\n", *asset.Name, err)
+
+						continue
+					}
+
+					sbomFiles = append(sbomFiles, sbomFilename)
+				}
+
+				if err := sc.ScanRelease(ver, dir, sbomFiles); err != nil {
 					fmt.Fprintf(os.Stderr, "Scan failed: %s\n", err)
 
 					break
@@ -135,7 +174,7 @@ var scanCmd = &cobra.Command{
 
 func init() {
 	scanCmd.Flags().StringVarP(&options.DataFile, "source-file", "", "", "Path to the YAML file containing data for VEX generation")
-	scanCmd.Flags().StringVarP(&options.Version, "from", "", "v1.11.0", "Minimum version that should be scanned")
+	scanCmd.Flags().StringVarP(&options.StartVersion, "start-version", "", "v1.11.0", "Minimum version that should be scanned")
 	scanCmd.Flags().StringVarP(&options.Owner, "owner", "o", "siderolabs", "GitHub repo owner")
 	scanCmd.Flags().StringVarP(&options.Repo, "repo", "r", "talos", "GitHub repo to get releases from")
 	scanCmd.Flags().StringVarP(&options.OutputDir, "output-dir", "O", "_out", "Directory to save results to")
