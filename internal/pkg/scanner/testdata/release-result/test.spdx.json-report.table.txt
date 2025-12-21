@@ -1,0 +1,2 @@
+NAME  INSTALLED  FIXED IN  VULNERABILITY   SEVERITY  EPSS          RISK   
+cni   v1.7.1     1.9.0     CVE-2025-67499  Medium    < 0.1% (1st)  < 0.1  

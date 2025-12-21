@@ -84,7 +84,7 @@ var scanCmd = &cobra.Command{
 			return
 		}
 
-		sc, err := scanner.NewScanner(data)
+		sc, err := scanner.NewScanner(data, nil)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error creating scanner: %s\n", err)
 
