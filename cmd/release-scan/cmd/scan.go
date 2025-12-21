@@ -43,7 +43,7 @@ func downloadAsset(githubClient *github.Client, owner, repo string, asset github
 	if err != nil {
 		return "", err
 	}
-	defer f.Close()
+	defer f.Close() //nolint:errcheck
 
 	_, err = io.Copy(f, rc)
 
@@ -91,7 +91,7 @@ var scanCmd = &cobra.Command{
 			return
 		}
 
-		defer sc.Close()
+		defer sc.Close() //nolint:errcheck
 
 		sbomRegex := regexp.MustCompile(options.MatchFiles)
 		skipRegex := regexp.MustCompile(options.SkipTags)

@@ -102,10 +102,13 @@ func (sc *Scanner) createVexFile(filepath string, ver string) error {
 	if err != nil {
 		return fmt.Errorf("error creating VEX file: %w", err)
 	}
-	defer f.Close()
 
 	if err = vexgen.Serialize(doc, f); err != nil {
 		return fmt.Errorf("error serializing VEX document: %w", err)
+	}
+
+	if err = f.Close(); err != nil {
+		return fmt.Errorf("error closing VEX document: %w", err)
 	}
 
 	return nil
