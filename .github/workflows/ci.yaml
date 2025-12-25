@@ -1,6 +1,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2025-12-25T21:07:38Z by kres 26be706.
+# Generated on 2025-12-25T21:08:04Z by kres 26be706.
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
@@ -94,12 +94,37 @@ jobs:
           PUSH: "true"
         run: |
           make image-generate-vex IMAGE_TAG=latest
+      - name: release-scan
+        run: |
+          make release-scan
+      - name: Login to registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # version: v3.6.0
+        with:
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+      - name: image-release-scan
+        run: |
+          make image-release-scan
+      - name: push-release-scan
+        if: github.event_name != 'pull_request'
+        env:
+          PUSH: "true"
+        run: |
+          make image-release-scan
+      - name: push-release-scan-latest
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        env:
+          PUSH: "true"
+        run: |
+          make image-release-scan IMAGE_TAG=latest
       - name: Generate Checksums
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           cd _out
-          sha256sum generate-vex-* > sha256sum.txt
-          sha512sum generate-vex-* > sha512sum.txt
+          sha256sum generate-vex-* release-scan-* > sha256sum.txt
+          sha512sum generate-vex-* release-scan-* > sha512sum.txt
       - name: release-notes
         if: startsWith(github.ref, 'refs/tags/')
         run: |
@@ -112,6 +137,7 @@ jobs:
           draft: "true"
           files: |-
             _out/generate-vex-*
+            _out/release-scan-*
             _out/sha*.txt
   lint:
     runs-on:

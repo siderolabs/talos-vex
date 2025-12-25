@@ -2,7 +2,7 @@
 
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2025-12-25T21:07:38Z by kres 26be706.
+# Generated on 2025-12-25T21:08:04Z by kres 26be706.
 
 ARG TOOLCHAIN=scratch
 
@@ -131,13 +131,33 @@ ARG SHA
 ARG TAG
 RUN --mount=type=cache,target=/root/.cache/go-build,id=talos-vex/root/.cache/go-build --mount=type=cache,target=/go/pkg,id=talos-vex/go/pkg go build ${GO_BUILDFLAGS} -ldflags "${GO_LDFLAGS} -X ${VERSION_PKG}.Name=generate-vex -X ${VERSION_PKG}.SHA=${SHA} -X ${VERSION_PKG}.Tag=${TAG}" -o /generate-vex-linux-amd64
 
+# builds release-scan-linux-amd64
+FROM base AS release-scan-linux-amd64-build
+COPY --from=generate / /
+COPY --from=embed-generate / /
+WORKDIR /src/cmd/release-scan
+ARG GO_BUILDFLAGS
+ARG GO_LDFLAGS
+ARG VERSION_PKG="internal/version"
+ARG SHA
+ARG TAG
+RUN --mount=type=cache,target=/root/.cache/go-build,id=talos-vex/root/.cache/go-build --mount=type=cache,target=/go/pkg,id=talos-vex/go/pkg go build ${GO_BUILDFLAGS} -ldflags "${GO_LDFLAGS} -X ${VERSION_PKG}.Name=release-scan -X ${VERSION_PKG}.SHA=${SHA} -X ${VERSION_PKG}.Tag=${TAG}" -o /release-scan-linux-amd64
+
 FROM scratch AS generate-vex-linux-amd64
 COPY --from=generate-vex-linux-amd64-build /generate-vex-linux-amd64 /generate-vex-linux-amd64
+
+FROM scratch AS release-scan-linux-amd64
+COPY --from=release-scan-linux-amd64-build /release-scan-linux-amd64 /release-scan-linux-amd64
 
 FROM generate-vex-linux-${TARGETARCH} AS generate-vex
 
 FROM scratch AS generate-vex-all
 COPY --from=generate-vex-linux-amd64 / /
+
+FROM release-scan-linux-${TARGETARCH} AS release-scan
+
+FROM scratch AS release-scan-all
+COPY --from=release-scan-linux-amd64 / /
 
 FROM scratch AS image-generate-vex
 ARG TARGETARCH
@@ -146,4 +166,12 @@ COPY --from=image-fhs / /
 COPY --from=image-ca-certificates / /
 LABEL org.opencontainers.image.source=https://github.com/siderolabs/talos-vex
 ENTRYPOINT ["/generate-vex"]
+
+FROM scratch AS image-release-scan
+ARG TARGETARCH
+COPY --from=release-scan release-scan-linux-${TARGETARCH} /release-scan
+COPY --from=image-fhs / /
+COPY --from=image-ca-certificates / /
+LABEL org.opencontainers.image.source=https://github.com/siderolabs/talos-vex
+ENTRYPOINT ["/release-scan"]
 

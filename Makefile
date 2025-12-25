@@ -1,6 +1,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2025-12-25T21:07:38Z by kres 26be706.
+# Generated on 2025-12-25T21:08:04Z by kres 26be706.
 
 # common variables
 
@@ -139,7 +139,7 @@ else
 GO_LDFLAGS += -s
 endif
 
-all: unit-tests generate-vex image-generate-vex lint
+all: unit-tests generate-vex image-generate-vex release-scan image-release-scan lint
 
 $(ARTIFACTS):  ## Creates artifacts directory.
 	@mkdir -p $(ARTIFACTS)
@@ -224,6 +224,20 @@ lint-fmt: lint-golangci-lint-fmt  ## Run all linter formatters and fix up the so
 .PHONY: image-generate-vex
 image-generate-vex:  ## Builds image for generate-vex.
 	@$(MAKE) registry-$@ IMAGE_NAME="generate-vex"
+
+.PHONY: $(ARTIFACTS)/release-scan-linux-amd64
+$(ARTIFACTS)/release-scan-linux-amd64:
+	@$(MAKE) local-release-scan-linux-amd64 DEST=$(ARTIFACTS)
+
+.PHONY: release-scan-linux-amd64
+release-scan-linux-amd64: $(ARTIFACTS)/release-scan-linux-amd64  ## Builds executable for release-scan-linux-amd64.
+
+.PHONY: release-scan
+release-scan: release-scan-linux-amd64  ## Builds executables for release-scan.
+
+.PHONY: image-release-scan
+image-release-scan:  ## Builds image for release-scan.
+	@$(MAKE) registry-$@ IMAGE_NAME="release-scan"
 
 .PHONY: rekres
 rekres:
