@@ -2,3 +2,38 @@
 kind: golang.Generate
 spec:
   versionPackagePath: internal/version
+---
+kind: auto.CustomSteps
+spec:
+  steps:
+    - name: scan-all
+      toplevel: true
+---
+kind: custom.Step
+name: scan-all
+spec:
+  makefile:
+    enabled: true
+    phony: true
+    script:
+      - "@$(MAKE) image-release-scan PUSH=true"
+      - docker pull $(REGISTRY)/$(USERNAME)/release-scan:$(TAG)
+      - docker rm -f talos-sbom-scanner || true
+      - docker run --rm --name talos-sbom-scanner -e GITHUB_TOKEN -v $(PWD)/$(ARTIFACTS)/scan:/_out/ --entrypoint /release-scan $(REGISTRY)/$(USERNAME)/release-scan:$(TAG) scan
+      - tar -C $(PWD)/$(ARTIFACTS)/scan -cvf $(PWD)/$(ARTIFACTS)/talos-vulnerability-data.tar .
+      - crane append -f $(PWD)/$(ARTIFACTS)/talos-vulnerability-data.tar -t $(REGISTRY)/$(USERNAME)/talos-vulnerability-data:latest
+  ghaction:
+    enabled: true
+    cronOnly: true
+    condition: only-on-schedule
+    environment:
+      REGISTRY: ttl.sh
+    jobs:
+      - name: scan-all
+        runnerGroup: generic
+        triggerLabels:
+          - integration/talos-main
+        environmentOverride:
+          REGISTRY: ghcr.io
+        crons:
+          - "30 7 * * *"

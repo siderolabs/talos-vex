@@ -69,6 +69,7 @@ var scanCmd = &cobra.Command{
 		// Use token if provided, for higher limits
 		if token, exists := os.LookupEnv("GITHUB_TOKEN"); exists {
 			client = client.WithAuthToken(token)
+			fmt.Fprintln(os.Stderr, "Found GITHUB_TOKEN")
 		}
 
 		data, err := v1alpha1.LoadExploitabilityData(options.DataFile)

@@ -1,6 +1,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2025-12-25T21:08:04Z by kres 26be706.
+# Generated on 2025-12-25T21:08:47Z by kres 26be706.
 
 # common variables
 
@@ -238,6 +238,15 @@ release-scan: release-scan-linux-amd64  ## Builds executables for release-scan.
 .PHONY: image-release-scan
 image-release-scan:  ## Builds image for release-scan.
 	@$(MAKE) registry-$@ IMAGE_NAME="release-scan"
+
+.PHONY: scan-all
+scan-all:
+	@$(MAKE) image-release-scan PUSH=true
+	docker pull $(REGISTRY)/$(USERNAME)/release-scan:$(TAG)
+	docker rm -f talos-sbom-scanner || true
+	docker run --rm --name talos-sbom-scanner -e GITHUB_TOKEN -v $(PWD)/$(ARTIFACTS)/scan:/_out/ --entrypoint /release-scan $(REGISTRY)/$(USERNAME)/release-scan:$(TAG) scan
+	tar -C $(PWD)/$(ARTIFACTS)/scan -cvf $(PWD)/$(ARTIFACTS)/talos-vulnerability-data.tar .
+	crane append -f $(PWD)/$(ARTIFACTS)/talos-vulnerability-data.tar -t $(REGISTRY)/$(USERNAME)/talos-vulnerability-data:latest
 
 .PHONY: rekres
 rekres:
