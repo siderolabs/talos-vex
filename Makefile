@@ -1,6 +1,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2025-12-15T16:09:29Z by kres 4b09af7.
+# Generated on 2025-12-25T21:08:47Z by kres 26be706.
 
 # common variables
 
@@ -18,14 +18,14 @@ WITH_RACE ?= false
 REGISTRY ?= ghcr.io
 USERNAME ?= siderolabs
 REGISTRY_AND_USERNAME ?= $(REGISTRY)/$(USERNAME)
-PROTOBUF_GO_VERSION ?= 1.36.10
+PROTOBUF_GO_VERSION ?= 1.36.11
 GRPC_GO_VERSION ?= 1.6.0
 GRPC_GATEWAY_VERSION ?= 2.27.3
 VTPROTOBUF_VERSION ?= 0.6.0
-GOIMPORTS_VERSION ?= 0.39.0
+GOIMPORTS_VERSION ?= 0.40.0
 GOMOCK_VERSION ?= 0.6.0
 DEEPCOPY_VERSION ?= v0.5.8
-GOLANGCILINT_VERSION ?= v2.7.1
+GOLANGCILINT_VERSION ?= v2.7.2
 GOFUMPT_VERSION ?= v0.9.2
 GO_VERSION ?= 1.25.5
 GO_BUILDFLAGS ?=
@@ -139,7 +139,7 @@ else
 GO_LDFLAGS += -s
 endif
 
-all: unit-tests generate-vex image-generate-vex lint
+all: unit-tests generate-vex image-generate-vex release-scan image-release-scan lint
 
 $(ARTIFACTS):  ## Creates artifacts directory.
 	@mkdir -p $(ARTIFACTS)
@@ -224,6 +224,29 @@ lint-fmt: lint-golangci-lint-fmt  ## Run all linter formatters and fix up the so
 .PHONY: image-generate-vex
 image-generate-vex:  ## Builds image for generate-vex.
 	@$(MAKE) registry-$@ IMAGE_NAME="generate-vex"
+
+.PHONY: $(ARTIFACTS)/release-scan-linux-amd64
+$(ARTIFACTS)/release-scan-linux-amd64:
+	@$(MAKE) local-release-scan-linux-amd64 DEST=$(ARTIFACTS)
+
+.PHONY: release-scan-linux-amd64
+release-scan-linux-amd64: $(ARTIFACTS)/release-scan-linux-amd64  ## Builds executable for release-scan-linux-amd64.
+
+.PHONY: release-scan
+release-scan: release-scan-linux-amd64  ## Builds executables for release-scan.
+
+.PHONY: image-release-scan
+image-release-scan:  ## Builds image for release-scan.
+	@$(MAKE) registry-$@ IMAGE_NAME="release-scan"
+
+.PHONY: scan-all
+scan-all:
+	@$(MAKE) image-release-scan PUSH=true
+	docker pull $(REGISTRY)/$(USERNAME)/release-scan:$(TAG)
+	docker rm -f talos-sbom-scanner || true
+	docker run --rm --name talos-sbom-scanner -e GITHUB_TOKEN -v $(PWD)/$(ARTIFACTS)/scan:/_out/ --entrypoint /release-scan $(REGISTRY)/$(USERNAME)/release-scan:$(TAG) scan
+	tar -C $(PWD)/$(ARTIFACTS)/scan -cvf $(PWD)/$(ARTIFACTS)/talos-vulnerability-data.tar .
+	crane append -f $(PWD)/$(ARTIFACTS)/talos-vulnerability-data.tar -t $(REGISTRY)/$(USERNAME)/talos-vulnerability-data:latest
 
 .PHONY: rekres
 rekres:
