@@ -24,16 +24,8 @@ spec:
       - crane append -f $(PWD)/$(ARTIFACTS)/talos-vulnerability-data.tar -t $(REGISTRY)/$(USERNAME)/talos-vulnerability-data:latest
   ghaction:
     enabled: true
-    cronOnly: true
-    condition: only-on-schedule
-    environment:
-      REGISTRY: ttl.sh
     jobs:
       - name: scan-all
         runnerGroup: generic
-        triggerLabels:
-          - integration/talos-main
-        environmentOverride:
-          REGISTRY: ghcr.io
         crons:
           - "30 7 * * *"

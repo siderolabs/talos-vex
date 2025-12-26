@@ -1,6 +1,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2025-12-25T21:08:47Z by kres 26be706.
+# Generated on 2025-12-26T10:14:50Z by kres 26be706.
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
@@ -136,6 +136,9 @@ jobs:
             })
 
             return resp.data.labels.map(label => label.name)
+      - name: scan-all
+        run: |
+          make scan-all
       - name: Generate Checksums
         if: startsWith(github.ref, 'refs/tags/')
         run: |
@@ -206,7 +209,6 @@ jobs:
   scan-all:
     runs-on:
       group: generic
-    if: contains(fromJSON(needs.default.outputs.labels), 'integration/talos-main')
     needs:
       - default
     steps:
@@ -248,8 +250,6 @@ jobs:
           endpoint: tcp://buildkit-amd64.ci.svc.cluster.local:1234
         timeout-minutes: 10
       - name: scan-all
-        env:
-          REGISTRY: ghcr.io
         run: |
           make scan-all
   unit-tests:
