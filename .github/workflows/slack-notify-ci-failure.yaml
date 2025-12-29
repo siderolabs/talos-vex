@@ -1,11 +1,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2025-12-15T16:09:29Z by kres 4b09af7.
+# Generated on 2025-12-25T21:08:47Z by kres 26be706.
 
 "on":
   workflow_run:
     workflows:
       - default
+      - scan-all-cron
     types:
       - completed
     branches:

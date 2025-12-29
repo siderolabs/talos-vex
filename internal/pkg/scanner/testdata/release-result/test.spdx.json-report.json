@@ -1,0 +1,121 @@
+{
+ "matches": [
+  {
+   "vulnerability": {
+    "id": "CVE-2025-67499",
+    "dataSource": "https://nvd.nist.gov/vuln/detail/CVE-2025-67499",
+    "namespace": "nvd:cpe",
+    "severity": "Medium",
+    "urls": [
+     "https://github.com/containernetworking/plugins/pull/1210",
+     "https://github.com/containernetworking/plugins/releases/tag/v1.9.0",
+     "https://github.com/containernetworking/plugins/security/advisories/GHSA-jv3w-x3r3-g6rm"
+    ],
+    "description": "The CNI portmap plugin allows containers to emulate opening a host port, forwarding that traffic to the container. Versions 1.6.0 through 1.8.0  inadvertently forward all traffic with the same destination port as the host port when the portmap plugin is configured with the nftables backend, thus ignoring the destination IP. This includes traffic not intended for the node itself, i.e. traffic to containers hosted on the node. Containers that request HostPort forwarding can intercept all traffic destined for that port. This requires that the portmap plugin be explicitly configured to use the nftables backend. This issue is fixed in version 1.9.0. To workaround, configure the portmap plugin to use the iptables backend. It does not have this vulnerability.",
+    "cvss": [
+     {
+      "source": "security-advisories@github.com",
+      "type": "Secondary",
+      "version": "3.1",
+      "vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:L/I:L/A:H",
+      "metrics": {
+       "baseScore": 6.6,
+       "exploitabilityScore": 1.9,
+       "impactScore": 4.8
+      },
+      "vendorMetadata": {}
+     }
+    ],
+    "epss": [
+     {
+      "cve": "CVE-2025-67499",
+      "epss": 0.00013,
+      "percentile": 0.01589,
+      "date": "2025-12-20"
+     }
+    ],
+    "cwes": [
+     {
+      "cve": "CVE-2025-67499",
+      "cwe": "CWE-200",
+      "source": "security-advisories@github.com",
+      "type": "Primary"
+     }
+    ],
+    "fix": {
+     "versions": [
+      "1.9.0"
+     ],
+     "state": "fixed",
+     "available": [
+      {
+       "version": "1.9.0",
+       "date": "2025-12-10",
+       "kind": "first-observed"
+      }
+     ]
+    },
+    "advisories": [],
+    "risk": 0.007539999999999999
+   },
+   "relatedVulnerabilities": [],
+   "matchDetails": [
+    {
+     "type": "cpe-match",
+     "matcher": "stock-matcher",
+     "searchedBy": {
+      "namespace": "nvd:cpe",
+      "cpes": [
+       "cpe:2.3:a:linuxfoundation:cni_network_plugins:v1.7.1:*:*:*:*:*:*:*"
+      ],
+      "package": {
+       "name": "cni",
+       "version": "v1.7.1"
+      }
+     },
+     "found": {
+      "vulnerabilityID": "CVE-2025-67499",
+      "versionConstraint": ">= 1.6.0, < 1.9.0 (unknown)",
+      "cpes": [
+       "cpe:2.3:a:linuxfoundation:cni_network_plugins:*:*:*:*:*:go:*:*"
+      ]
+     },
+     "fix": {
+      "suggestedVersion": "1.9.0"
+     }
+    }
+   ],
+   "artifact": {
+    "id": "Package-bldr-package-cni-db32bfd636d8011b",
+    "name": "cni",
+    "version": "v1.7.1",
+    "type": "",
+    "locations": null,
+    "language": "",
+    "licenses": [
+     "Apache-2.0"
+    ],
+    "cpes": [
+     "cpe:2.3:a:containernetworking:plugins:v1.7.1:*:*:*:*:*:*:*",
+     "cpe:2.3:a:linuxfoundation:cni_network_plugins:v1.7.1:*:*:*:*:*:*:*"
+    ],
+    "purl": "",
+    "upstreams": []
+   }
+  }
+ ],
+ "source": {
+  "type": "directory",
+  "target": "Talos"
+ },
+ "distro": {
+  "name": "",
+  "version": "",
+  "idLike": null
+ },
+ "descriptor": {
+  "name": "talos-vex",
+  "version": "",
+  "timestamp": "161622-716-78T77:09:08.7461716746916+07:00"
+ }
+}
